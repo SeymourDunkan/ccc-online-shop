@@ -19,6 +19,7 @@ private static final Logger LOGGER = LogManager.getLogger(ProductDAOImpl.class);
     private final String INSERT_PRODUCT_SQL = "insert into product (type, brand, model, material, color, image, price, category_id) VALUES (?,?,?,?,?,?,?,?)";
     private final String GET_PRODUCTS_BY_CATEGORY_SQL = "select * from category inner join "
     		+ "product on category.id=product.category_id where category.id=?";
+    private final String GET_PRODUCTS_BY_ID_SQL = "select * from product where id=?";
 	private DataSource dataSource;
 
 	public ProductDAOImpl(DataSource dataSource) {
@@ -144,6 +145,38 @@ private static final Logger LOGGER = LogManager.getLogger(ProductDAOImpl.class);
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
+	}
+
+	@Override
+	public Product getById(Integer productId) {
+		Connection conn = null;
+		PreparedStatement stmt= null;
+		ResultSet rs = null;
+		Product product = new Product();
+		try {
+			conn = dataSource.getConnection();
+			stmt = conn.prepareStatement(GET_PRODUCTS_BY_ID_SQL);
+            stmt.setInt(1, productId);
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				product.setId(rs.getInt(1));
+				product.setType(rs.getString(2));
+				product.setBrand(rs.getString(3));
+				product.setModel(rs.getString(4));
+				product.setMaterial(rs.getString(5));
+				product.setColor(rs.getString(6));
+				product.setImage(rs.getString(7));
+				product.setPrice(rs.getBigDecimal(8));
+			}
+
+		} catch (SQLException e) {
+			LOGGER.error("Some SQL error happened while collecting product by id " + productId);
+			e.printStackTrace();
+		} finally {
+			closeResourcesWithPreparedStatement(conn, stmt, rs);
+		}
+        LOGGER.info("Product by id " + productId + " is " + product);
+		return product;
 	}
 
 	

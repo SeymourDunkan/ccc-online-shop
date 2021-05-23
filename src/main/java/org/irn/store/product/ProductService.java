@@ -19,11 +19,11 @@ import org.irn.store.util.ValidationHelper;
 
 public class ProductService {
 	private static final Logger LOGGER = LogManager.getLogger(ProductService.class);
-	private DataSource dataSource;
+
 	private ProductDAO productDAO;
 	
     public ProductService(DataSource dataSource) {
-		this.dataSource = dataSource;
+
 		productDAO = new ProductDAOImpl(dataSource);
 	}
 

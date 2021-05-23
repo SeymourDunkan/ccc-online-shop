@@ -32,7 +32,7 @@
                             <li><a class="dropdown-item" href="user-logout">Logout</a></li>
                         </ul>
                   </div> 
-                  <a class="btn p-1" href="#" role="button"><i class="bi bi-cart"></i>Shopping cart<span class="badge bg-secondary ms-1">9</span></a>
+                  <a class="btn p-1" href="view-cart" role="button"><i class="bi bi-cart"></i>Shopping cart<span class="badge bg-secondary ms-1">9</span></a>
 				</div>
 			</div>
 		</header>
@@ -44,7 +44,7 @@
 					<a class="btn" href="#">Ukr</a><a class="btn" href="#">Eng</a>
 				</div>
 				<div class="col-8 pt-1 d-flex justify-content-end align-items-center">
-					<a class="btn" href="login">Sign In</a><a class="btn" href="#"><i class="bi bi-cart"></i>Shopping Cart</a>
+					<a class="btn" href="login">Sign In</a><a class="btn" href="view-cart"><i class="bi bi-cart"></i>Shopping Cart</a>
 				</div>
 			</div>
 		</header>

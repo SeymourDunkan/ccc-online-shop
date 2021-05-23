@@ -39,8 +39,7 @@
 							</ul>
 						</div>
 						<a class="btn p-1" href="view-cart" role="button"><i
-							class="bi bi-cart"></i>Shopping cart<span
-							class="badge bg-secondary ms-1">9</span></a>
+							class="bi bi-cart"></i>Shopping cart</a>
 					</div>
 				</div>
 			</header>
@@ -110,8 +109,8 @@
 		<div class="row"> 
 		    <c:choose>
 		       <c:when test="${cart != null }">
-		       
-		          <c:if test="${not cart.isEmpty() }">
+
+		         <c:if test="${not cart.isEmpty()}">
 		                <div class="col-12"><!-- cart -->
 				<table class="table">
 					<thead>
@@ -125,54 +124,56 @@
 						</tr>
 					</thead>
 					<tbody class="table-striped">
+					    <c:forEach var="entry" items="${cart}" varStatus="count">
 						<tr>
-							<th scope="row">1</th>
-							<td><img style="width: 50px;" src="https://shop.ccc.eu/media/cache/gallery/rc/lb4ugggn/images/98/988772/2/2/2230004704279_01_mt.jpg" /></td>
-							<td><a href="#">Черевик Gino Rossi RST-DTI604 Білий</a></td>
+							<td scope="row">${count.getCount()}</td>
+							<td><img style="width: 50px;" src="${entry.key.image }" /></td>
+							<td><a href="#">${entry.key.type} ${entry.key.brand} ${entry.key.model} ${entry.key.color}</a></td>
 							<td>
                                 <form action="view-cart" method="get">
-                                <input type="number" min="1" name="quantity" style="max-width: 100px;" value="1"/>
-                                <input type="hidden" name="product_id" value="1"/>
+                                <input type="number" min="1" name="quantity" style="max-width: 100px;" value="${entry.value }"/>
+                                <input type="hidden" name="product_id" value="${entry.key.id}"/>
                                 <input type="hidden" name="action" value="update"/>
                                 <input type="submit" value="Edit"/>
                                 </form>
 							</td>
-							<td>150.00 <span>$</span></td>
+							<td>${entry.key.price} <span>$</span></td>
                             <td><a class="text-danger" href="view-cart?action=delete&product_id=1">Delete</a></td>
-						</tr>			
+						</tr>		
+						</c:forEach>
 						<tr>
 							<th></th>
 							<td></td>
 							<td></td>
 							<td>Total</td>
-							<td>550.00 <span>$</span></td>
+							<td>${total} <span>$</span></td>
                             <td></td>
 						</tr>		
 					</tbody>
 				</table>
 			</div> <!-- cart -->
 		    <div class="col6">
-		    <a href="#" class="btn btn-primary">Continue shopping</a>
+		    <a href="#" onclick="history.back();" class="btn btn-primary">Back to shopping</a>
 		    <c:if test="${user != null }">
 		         <a href="#" class="btn btn-primary">Checkout</a>
 		    </c:if>
 		    <c:if test="${user == null }">
 		        <div class="col-12 mt-3">
-		             Checkout is available only for registered users. Please <a href="">Sign In</a> or <a href="">Register</a> if you don't have account yet.
+		             Checkout is available only for registered users. Please <a href="login">Sign In</a> or <a href="">Register</a> if you don't have account yet.
 		        </div>
 		    </c:if>
 		    </div> <!-- cart related messages-->
 		          
 		          </c:if>
-		          <c:if test="${cart.isEmpty() }">
+		          <c:if test="${empty cart}">
 		                <div class="col-12">
-		                    Your Shopping Cart is empty <a href="#" onclick="history.back();" class="btn btn-primary">Back to shopping shopping</a>
+		                    Your Shopping Cart is empty  1 <a href="#" onclick="history.back();" class="link-primary">Back to shopping shopping</a>
 		                </div>
 		          </c:if>
 		       </c:when>
 		       <c:otherwise>
 		          <div class="col-12">
-		                    Your Shopping Cart is empty <a href="#" onclick="history.back();" class="link-primary">Back to shopping shopping</a>
+		                    Your Shopping Cart is empty <a href="#" onclick="history.back();" class="link-primary">Back to shopping</a>
 		                </div>
 		       </c:otherwise>
 		    </c:choose>
