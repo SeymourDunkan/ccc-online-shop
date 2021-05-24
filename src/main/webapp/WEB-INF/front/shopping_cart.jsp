@@ -155,7 +155,7 @@
 		    <div class="col6">
 		    <a href="#" onclick="history.back();" class="btn btn-primary">Back to shopping</a>
 		    <c:if test="${user != null }">
-		         <a href="#" class="btn btn-primary">Checkout</a>
+		         <a href="checkout" class="btn btn-primary">Checkout</a>
 		    </c:if>
 		    <c:if test="${user == null }">
 		        <div class="col-12 mt-3">

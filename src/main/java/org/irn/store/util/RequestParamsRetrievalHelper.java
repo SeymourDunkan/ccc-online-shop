@@ -6,6 +6,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.irn.store.order.OrderDetails;
 import org.irn.store.product.Product;
 import org.irn.store.user.AuthCredentials;
 import org.irn.store.user.User;
@@ -36,5 +37,14 @@ public class RequestParamsRetrievalHelper {
 		product.setDateAdded(new Date());
 		product.setCategoryId(Integer.parseInt(request.getParameter("category").trim()));
 		return product;
+	}
+	
+	public static OrderDetails retrieveCheckoutFormParams(HttpServletRequest request) {
+		OrderDetails orderDetails = new OrderDetails();
+		orderDetails.setShippingAddress(request.getParameter("shipping_address"));
+		orderDetails.setRecipientName(request.getParameter("recipient_name"));
+		orderDetails.setRecipientPhone(request.getParameter("recipient_phone"));
+		orderDetails.setPaymentMethod(request.getParameter("payment_method"));
+		return orderDetails;
 	}
 }
