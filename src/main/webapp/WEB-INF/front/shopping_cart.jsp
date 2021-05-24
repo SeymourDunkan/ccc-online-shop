@@ -34,7 +34,7 @@
 								<c:out value="${user.firstName} ${user.lastName}" />
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-								<li><a class="dropdown-item" href="#">MyOrders</a></li>
+								<li><a class="dropdown-item" href="user-orders">MyOrders</a></li>
 								<li><a class="dropdown-item" href="user-logout">Logout</a></li>
 							</ul>
 						</div>
@@ -119,6 +119,7 @@
 							<th scope="col">Image</th>
 							<th scope="col">Item</th>
 							<th scope="col">Quantity</th>
+							<th scope="col">Price Per Unit</th>
 							<th scope="col">Total</th>
 							<th scope="col">Action</th>
 						</tr>
@@ -131,18 +132,20 @@
 							<td><a href="#">${entry.key.type} ${entry.key.brand} ${entry.key.model} ${entry.key.color}</a></td>
 							<td>
                                 <form action="view-cart" method="get">
-                                <input type="number" min="1" name="quantity" style="max-width: 100px;" value="${entry.value }"/>
+                                <input type="number" min="1" name="quantity" style="max-width: 100px;" value="${entry.value}"/>
                                 <input type="hidden" name="product_id" value="${entry.key.id}"/>
                                 <input type="hidden" name="action" value="update"/>
                                 <input type="submit" value="Edit"/>
                                 </form>
 							</td>
 							<td>${entry.key.price} <span>$</span></td>
+							<td>${entry.key.price * entry.value} <span>$</span></td>
                             <td><a class="text-danger" href="view-cart?action=delete&product_id=1">Delete</a></td>
 						</tr>		
 						</c:forEach>
 						<tr>
 							<th></th>
+							<td></td>
 							<td></td>
 							<td></td>
 							<td>Total</td>
@@ -167,7 +170,7 @@
 		          </c:if>
 		          <c:if test="${empty cart}">
 		                <div class="col-12">
-		                    Your Shopping Cart is empty  1 <a href="#" onclick="history.back();" class="link-primary">Back to shopping shopping</a>
+		                    Your Shopping Cart is empty <a href="#" onclick="history.back();" class="link-primary">Back to shopping</a>
 		                </div>
 		          </c:if>
 		       </c:when>

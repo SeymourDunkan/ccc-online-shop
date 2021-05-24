@@ -96,5 +96,13 @@ public class OrderDetails {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-  
+
+	@Override
+	public String toString() {
+		return "OrderDetails [orderId=" + orderId + ", userId=" + userId + ", orderDate=" + orderDate
+				+ ", shippingAddress=" + shippingAddress + ", recipientName=" + recipientName + ", recipientPhone="
+				+ recipientPhone + ", paymentMethod=" + paymentMethod + ", total=" + total + ", status=" + status + "]";
+	}
+    
+	
 }

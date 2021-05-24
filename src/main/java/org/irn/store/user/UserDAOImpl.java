@@ -26,7 +26,6 @@ public class UserDAOImpl implements UserDAO {
 
 	private final String GET_ALL_USERS_SQL = "select * from users";
 	private final String GET_USERS_BY_EMAIL_SQL = "select * from users where email=?";
-	private final String GET_USERS_BY_EMAIL_AND_PASSWORD_SQL = "select * from users where email=? and password=?";
 	private final String INSERT_USER_SQL = "insert into users (email, password, first_name, last_name, role, blocked) VALUES (?,?,?,?,?,?)";
     
 	@Override

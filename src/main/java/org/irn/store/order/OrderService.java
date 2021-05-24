@@ -50,16 +50,11 @@ public class OrderService {
     	ShoppingCart cart = new ShoppingCart(itemsInShoppingCart);
 
     	orderDAO.createOrder( cart, orderDetails);
-    	// transactional
-    	
-    	// add entry into product_order -> get id of the new order
-    	// add all product ids and [subtotal] into order_detail using order_id
-    	
-    	// transactional
-    	
-    	// set order id as attribute
+    
+    	request.getSession().setAttribute("cart", new HashMap<Product, Integer>());
     	// epmpty cart
     	// redirect to orders
+    	
     	LOGGER.info("New product order was saved. Redirecting to user-orders");
     	response.sendRedirect("user-orders");
     	
