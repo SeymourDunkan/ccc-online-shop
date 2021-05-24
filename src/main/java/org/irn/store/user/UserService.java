@@ -83,16 +83,19 @@ public class UserService {
         		LOGGER.info("Have set user attr into the session");
         		request.getSession().setAttribute("user_role", registeredUser.getRole());
         		LOGGER.info("Have set role attr into the session " + registeredUser.getRole() );
+        		
         		if ( registeredUser.getRole().equals("customer")) {
         			LOGGER.info("Redirecting to home because user is customer");
-        		response.sendRedirect(request.getContextPath() + "/home");
-        		return;
+        		    response.sendRedirect(request.getContextPath() + "/home");
+        		    return;
         		} 
+        		
         		if ( registeredUser.getRole().equals("admin")) {
         			LOGGER.info("Redirecting to admin dashboard");
             		response.sendRedirect(request.getContextPath() + "/admin/dashboard");
             		return;
-            		}
+            	}
+        		
         	} else  {
         		// no such user in db
         		credentialsValidationErrorMessages.add("Login and password you have provided doesnt match to any registered user.");

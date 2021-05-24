@@ -1,10 +1,18 @@
 package org.irn.store.order;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+
 public class OrderDetails {
+	private Integer orderId;
+	private Integer userId;
+	private Timestamp orderDate;
     private String shippingAddress;
     private String recipientName;
     private String recipientPhone;
     private String paymentMethod;
+    private BigDecimal total;
+    private String status;
     
 	public OrderDetails(String shippingAddress, String recipientName, String recipientPhone, String paymentMethod) {
 		this.shippingAddress = shippingAddress;
@@ -48,9 +56,45 @@ public class OrderDetails {
 	public void setPaymentMethod(String paymentMethod) {
 		this.paymentMethod = paymentMethod;
 	}
-	
-	
-	
-    
-    
+
+	public Integer getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	public Timestamp getOrderDate() {
+		return orderDate;
+	}
+
+	public void setOrderDate(Timestamp orderDate) {
+		this.orderDate = orderDate;
+	}
+
+	public BigDecimal getTotal() {
+		return total;
+	}
+
+	public void setTotal(BigDecimal total) {
+		this.total = total;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+  
 }
