@@ -33,13 +33,9 @@ public class CheckoutServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// all conditions ok -> add order -> redirect to user orders
-		// some error -> forward to checkout again with error messages
 		LOGGER.info("Recieved POST request to checkout servlet");
 		OrderService orderService = new OrderService(dataSource);
 		orderService.processOrder(request, response);
-		
-		
 	}
 
 }

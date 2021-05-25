@@ -108,8 +108,12 @@
 	<div class="container">
 		<div class="row"> 
 		    <div class="col-8 offset-2">
-		        <h3>You don't have any orders yet.</h3>
-				<table class="table table-striped">
+		        <c:if test="${orders.size() == 0 }">
+		               <h3>You don't have any orders yet.</h3>
+		        </c:if>
+		        
+		        <c:if test="${orders.size() > 0 }">
+		               <table class="table table-striped">
 					<thead>
 						<tr>
 							<th scope="col">Order No.</th>
@@ -122,56 +126,32 @@
 					<tbody class="table-striped">
 					    <c:forEach var="order" items="${orders}" varStatus="count">
 						<tr scope="row">
-							<td>234</td>
-							<td>24-03-2021</td>
+							<td>${order.orderId }</td>
+							<td>${order.orderDate}</td>
 							<td>
-							    <div>John Doe</div>
-							    <div>43, Independence Str., Lviv, Ukraine</div>
-							    <div>+380 67 500 10 10</div>
-							    <div>PayPal</div>
+							    <div>${order.shippingAddress}</div>
+							    <div>${order.recipientName}</div>
+							    <div>${order.recipientPhone}</div>
+							    <div>${order.paymentMethod}</div>
 							</td>
-							<td>150.33 <span>$</span></td>
-							<td class="text-success">Registered</td>
+							<td>${order.total} <span>$</span></td>
+							<c:if test="${order.status== 'Registered' }">
+							<td class="text-warning">${order.status}</td>
+							</c:if>
+							<c:if test="${order.status== 'Paid' }">
+							<td class="text-success">${order.status}</td>
+							</c:if>
+							<c:if test="${order.status== 'Cancelled' }">
+							<td class="text-danger">${order.status}</td>
+							</c:if>
 						</tr>		
 						</c:forEach>
-						<tr scope="row">
-							<td>238</td>
-							<td>21-03-2021</td>
-							<td>
-							    <div>John Doe</div>
-							    <div>43, Independence Str., Lviv, Ukraine</div>
-							    <div>+380 67 500 10 10</div>
-							    <div>PayPal</div>
-							</td>
-							<td>320.70 <span>$</span></td>
-							<td class="text-warning">Registered</td>
-						</tr>
-						<tr scope="row">
-							<td>249</td>
-							<td>24-05-2021</td>
-							<td>
-							    <div>John Doe</div>
-							    <div>43, Independence Str., Lviv, Ukraine</div>
-							    <div>+380 67 500 10 10</div>
-							    <div>PayPal</div>
-							</td>
-							<td>180.33 <span>$</span></td>
-							<td class="text-success">Paid</td>
-						</tr>
-						<tr scope="row">
-							<td>234</td>
-							<td>24-03-2021</td>
-							<td>
-							    <div>John Doe</div>
-							    <div>43, Independence Str., Lviv, Ukraine</div>
-							    <div>+380 67 500 10 10</div>
-							    <div>PayPal</div>
-							</td>
-							<td>150.33 <span>$</span></td>
-							<td class="text-danger">Canceled</td>
-						</tr>
 			       </tbody>
 				</table>
+		               
+		        </c:if>
+		        
+				
 			</div>
     
 		</div>

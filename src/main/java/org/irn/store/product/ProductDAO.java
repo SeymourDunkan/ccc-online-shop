@@ -6,5 +6,7 @@ public interface ProductDAO {
 	Product create(Product product);
 	Product update(Product product);
 	List<Product> getByCategory(Integer categoryId);
+	List<Product> getByCategoryAndPageNumber(Integer categoryId, String sqlToAdd);
 	Product getById(Integer productId);
+	Integer getTotalRecords(Integer categoryId);
 }

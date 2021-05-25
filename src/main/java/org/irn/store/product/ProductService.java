@@ -14,6 +14,7 @@ import org.irn.store.user.User;
 import org.irn.store.user.UserDAO;
 import org.irn.store.user.UserDAOImpl;
 import org.irn.store.user.UserService;
+import org.irn.store.util.PaginationHelper;
 import org.irn.store.util.RequestParamsRetrievalHelper;
 import org.irn.store.util.ValidationHelper;
 
@@ -54,15 +55,33 @@ public class ProductService {
 
 	public void renderProducts(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String requestCategoryId = request.getParameter("category_id");
+		String requestCurrentPage = request.getParameter("page");
+		Integer currentPage = null;
 		Integer categoryId = null;
+		if ( requestCurrentPage == null ) {
+			currentPage = 1;
+		} else {
+			currentPage = Integer.parseInt(requestCurrentPage);
+		}
 		if ( requestCategoryId != null ) {
 			categoryId = Integer.parseInt(requestCategoryId);
 		}
-		List<Product> products = productDAO.getByCategory(categoryId);
+		//List<Product> products = productDAO.getByCategory(categoryId);
 		
+		// now hardcoded but
+        // this can come from request
+		PaginationHelper paginationHelper = new PaginationHelper(8);
+		
+		String sqlToAppend = paginationHelper.getSQLByPageNumber(currentPage);
+		LOGGER.info("SQL to append " + sqlToAppend);
+		//productDAO.getByCategoryAndPageNumber(categoryId, sqlToAppend);
+		List<Product> products  = productDAO.getByCategoryAndPageNumber(categoryId, sqlToAppend);
+		Integer totalRecords = productDAO.getTotalRecords(categoryId);
+		Integer numberOfPages = paginationHelper.getTotalNumberOfPages(totalRecords);
 		request.setAttribute("products", products);
-		LOGGER.info(products);
-		request.getRequestDispatcher("WEB-INF/front/product_list.jsp?category_id="+categoryId).forward(request, response);
+	    request.setAttribute("numberOfPages", numberOfPages);
+	    request.setAttribute("categoryId", categoryId);
+		request.getRequestDispatcher("WEB-INF/front/product_list.jsp?category_id="+categoryId+"&page=" + currentPage).forward(request, response);
 	}
     
     

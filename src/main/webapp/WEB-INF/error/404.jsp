@@ -52,7 +52,7 @@
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		
 			<div class="container-fluid">
-				<a class="navbar-brand" href="#">
+				<a class="navbar-brand" href="home">
                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 27" width="80px" 
                      height="27px"><title>CCC</title><g id="Page-1" stroke="none" 
                      stroke-width="1" fill="none" fill-rule="evenodd"><g id="logo" fill="#E9500E" 

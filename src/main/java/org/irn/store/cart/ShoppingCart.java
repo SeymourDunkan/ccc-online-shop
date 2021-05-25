@@ -18,7 +18,6 @@ public class ShoppingCart {
 	}
 
 	public void addItem(Product product) {
-    	// can do lambda with map calcualte
     	if ( cart.containsKey(product)) {
     		Integer quantity = cart.get(product) + 1;
     		cart.put(product, quantity);
@@ -40,7 +39,6 @@ public class ShoppingCart {
     }
     
     public BigDecimal getTotalAmount() {
-    	// can do lambda
     	BigDecimal total = new BigDecimal("0.0");
     	Iterator<Product> iterator = cart.keySet().iterator();
     	

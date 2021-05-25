@@ -52,11 +52,28 @@ public class OrderService {
     	orderDAO.createOrder( cart, orderDetails);
     
     	request.getSession().setAttribute("cart", new HashMap<Product, Integer>());
-    	// epmpty cart
-    	// redirect to orders
-    	
     	LOGGER.info("New product order was saved. Redirecting to user-orders");
     	response.sendRedirect("user-orders");
     	
     }
+
+
+	public void showUserOrders(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		// get user id
+		// get orders
+		// set attribute
+		// forward
+		
+		User loggedInUser = (User)(request.getSession().getAttribute("user"));
+		if ( loggedInUser == null ) {
+			response.sendRedirect("login");
+			return;
+		}
+		
+		List<OrderDetails> userOrders = orderDAO.getOrdersByUserId(loggedInUser.getId());
+		request.setAttribute("orders", userOrders);
+		request.getRequestDispatcher("WEB-INF/front/user_orders_list.jsp").forward(request, response);
+	}
+	
+	
 }

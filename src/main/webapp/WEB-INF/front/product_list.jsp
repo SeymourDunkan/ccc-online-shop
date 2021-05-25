@@ -95,7 +95,8 @@
 	                   <div class="col-12">
 	                   <img class="img-fluid" src="${product.image}" />
 	                   <div class="row">
-	                   	<div class="col-12">${product.type} ${product.brand} ${product.model} ${product.color}</div>
+	                   	<div class="col-12">${product.type} ${product.brand}</div>
+	                   	<div class="col-12">${product.model} ${product.color}</div>
 	                   </div>
 	                   <div class="row">
 	                   	<div class="col-12">${product.price}<span> $</span></div>
@@ -112,11 +113,15 @@
 	        <div class="col-12">
                 <nav aria-label="Page navigation example">
                      <ul class="pagination">
-                          <li class="page-item"><a class="page-link link-secondary" href="#">Previous</a></li>
-                          <li class="page-item"><a class="page-link link-secondary" href="#">1</a></li>
-                          <li class="page-item"><a class="page-link link-secondary" href="#">2</a></li>
-                          <li class="page-item"><a class="page-link link-secondary" href="#">3</a></li>
-                          <li class="page-item"><a class="page-link link-secondary" href="#">Next</a></li>
+                          <% 
+                          Integer numberOfPages = (Integer) request.getAttribute("numberOfPages");
+                          Integer categoryId = (Integer) request.getAttribute("categoryId");
+                          for(int i = 1; i <= numberOfPages; i++) { %>
+                                   <li class="page-item">
+                              <a class="page-link link-secondary" href="product-list?category_id=<%= categoryId %>&page=<%= i %>"><%= i %></a>
+                              </li>
+
+                            <% } %>
                      </ul>
                </nav>
             </div>

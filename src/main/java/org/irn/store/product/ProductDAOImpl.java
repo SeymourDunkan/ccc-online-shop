@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.irn.store.util.PaginationHelper;
 
 public class ProductDAOImpl implements ProductDAO {
 
@@ -20,6 +21,7 @@ private static final Logger LOGGER = LogManager.getLogger(ProductDAOImpl.class);
     private final String GET_PRODUCTS_BY_CATEGORY_SQL = "select * from category inner join "
     		+ "product on category.id=product.category_id where category.id=?";
     private final String GET_PRODUCTS_BY_ID_SQL = "select * from product where id=?";
+    private final String GET_TOTAL_RECORDS_SQL = "select count(*) as total_records from product where category_id=?";
 	private DataSource dataSource;
 
 	public ProductDAOImpl(DataSource dataSource) {
@@ -78,16 +80,12 @@ private static final Logger LOGGER = LogManager.getLogger(ProductDAOImpl.class);
 		ResultSet rs = null;
 		List<Product> productsInCategory = new ArrayList<Product>();
 		try {
-			LOGGER.info("dataSource is " + dataSource);
 			conn = dataSource.getConnection();
-			LOGGER.info(conn);
 			stmt = conn.prepareStatement(GET_PRODUCTS_BY_CATEGORY_SQL);
 			LOGGER.info(stmt.toString());
             stmt.setInt(1, category_id);
 			rs = stmt.executeQuery();
-			LOGGER.info(rs.toString());
 			while (rs.next()) {
-				LOGGER.info("Checking for results");
 				Product product = new Product();
 				product.setId(rs.getInt(3));
 				product.setType(rs.getString(4));
@@ -111,7 +109,6 @@ private static final Logger LOGGER = LogManager.getLogger(ProductDAOImpl.class);
 		} finally {
 			closeResourcesWithPreparedStatement(conn, stmt, rs);
 		}
-
 		return productsInCategory;
 	}
 	
@@ -177,6 +174,71 @@ private static final Logger LOGGER = LogManager.getLogger(ProductDAOImpl.class);
 		}
         LOGGER.info("Product by id " + productId + " is " + product);
 		return product;
+	}
+
+	@Override
+	public Integer getTotalRecords(Integer categoryId) {
+		Connection conn = null;
+		PreparedStatement stmt= null;
+		ResultSet rs = null;
+		Integer numberOfRecords = null;
+		try {
+			conn = dataSource.getConnection();
+			stmt = conn.prepareStatement(GET_TOTAL_RECORDS_SQL);
+			stmt.setInt(1, categoryId);
+			rs = stmt.executeQuery();
+			rs.next();
+			numberOfRecords = rs.getInt(1);
+		} catch (SQLException e) {
+			LOGGER.error("Some SQL error happened while getting total number of records in 'product' table ");
+			e.printStackTrace();
+		} finally {
+			closeResourcesWithStatement(conn, stmt, rs);
+		}
+
+		return numberOfRecords;
+	}
+
+	@Override
+	public List<Product> getByCategoryAndPageNumber(Integer categoryId, String sqlToAdd) {
+		Connection conn = null;
+		PreparedStatement stmt= null;
+		ResultSet rs = null;
+		List<Product> productsInCategory = new ArrayList<Product>();
+		try {
+			conn = dataSource.getConnection();
+			String sql = GET_PRODUCTS_BY_CATEGORY_SQL + sqlToAdd;
+			stmt = conn.prepareStatement(sql);
+			LOGGER.info("SQL "+GET_PRODUCTS_BY_CATEGORY_SQL + sqlToAdd);
+            stmt.setInt(1, categoryId);
+            
+			LOGGER.info(stmt.toString());
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				Product product = new Product();
+				product.setId(rs.getInt(3));
+				product.setType(rs.getString(4));
+				product.setBrand(rs.getString(5));
+				product.setModel(rs.getString(6));
+				product.setMaterial(rs.getString(7));
+				product.setColor(rs.getString(8));
+				product.setImage(rs.getString(9));
+				product.setPrice(rs.getBigDecimal(10));
+				product.setCategoryId(rs.getInt(1));
+				
+				productsInCategory.add(product);
+			}
+
+			LOGGER.info("Checked for presence of the products in category " + categoryId);
+			LOGGER.info(productsInCategory.size());
+
+		} catch (SQLException e) {
+			LOGGER.error("Some SQL error happened while collecting products in category " + categoryId);
+			e.printStackTrace();
+		} finally {
+			closeResourcesWithPreparedStatement(conn, stmt, rs);
+		}
+		return productsInCategory;
 	}
 
 	
