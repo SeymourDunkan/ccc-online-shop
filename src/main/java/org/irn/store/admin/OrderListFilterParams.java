@@ -1,16 +1,28 @@
 package org.irn.store.admin;
 
+import java.util.Arrays;
+
 public class OrderListFilterParams {
     private String customerEmail;
     private Integer orderId;
     private String[] statusValues;
     private Integer page;
+    private String newStatus;
     
-	public OrderListFilterParams(String customerEmail, Integer orderId, String[] statusValues, Integer page) {
+	public String getNewStatus() {
+		return newStatus;
+	}
+
+	public void setNewStatus(String newStatus) {
+		this.newStatus = newStatus;
+	}
+
+	public OrderListFilterParams(String customerEmail, Integer orderId, String[] statusValues, Integer page, String newStatus) {
 		this.customerEmail = customerEmail;
 		this.orderId = orderId;
 		this.statusValues = statusValues;
 		this.page = page;
+		this.newStatus = newStatus;
 	}
 
 	public OrderListFilterParams() {
@@ -51,4 +63,12 @@ public class OrderListFilterParams {
 	public boolean isOnlyPagePresent() {
 		return ( orderId == null && statusValues == null && customerEmail == null );
 	}
+
+	@Override
+	public String toString() {
+		return "OrderListFilterParams [customerEmail=" + customerEmail + ", orderId=" + orderId + ", statusValues="
+				+ Arrays.toString(statusValues) + ", page=" + page + ", newStatus=" + newStatus + "]";
+	}
+	
+	
 }

@@ -29,6 +29,7 @@ public class OrderDAOImpl implements OrderDAO {
     private final String GET_ORDERS_BY_USER_ID_SQL = "select * from order_details where user_id=?";
     private final String GET_ORDERS_AND_USERS_SQL = "select * from order_details inner join users on order_details.user_id=users.user_id order by order_details.order_id desc";
     private final String GET_TOTAL_RECORDS_NO_FILTER_SQL = "select count(*) from order_details inner join users on order_details.user_id=users.user_id";
+    private final String UPDATE_ORDER_STATUS_SQL = "update order_details set status=? where order_details.order_id=?";
     
 	private DataSource dataSource;
 	
@@ -84,7 +85,7 @@ public class OrderDAOImpl implements OrderDAO {
 			LOGGER.error("Some SQL error happened while adding new order");
 			e.printStackTrace();
 		} finally {
-			closeResources(conn, stmt, rs);
+			closeResourcesWithPreparedStatement(conn, stmt, rs);;
 		}
 		
 		return savedOrderDetails;
@@ -110,25 +111,26 @@ public class OrderDAOImpl implements OrderDAO {
 			LOGGER.error("Something whent wrong while adding products into the order");
 			e.printStackTrace();
 		} finally {
-			closeResources(conn, stmt, rs);
+			closeResourcesWithPreparedStatement(conn, stmt, rs);
 		}
 	}
 	
-	private void closeResources(Connection conn, PreparedStatement stmt, ResultSet rs) {
+	public void updateOrderStatus(Integer orderId, String newStatus) {
+		LOGGER.info("Order Id is  " + orderId + " and newStatus is " + newStatus);
 		try {
-			if ( rs != null) {
-				rs.close();
-			}
-			if ( stmt != null) {
-				stmt.close();
-			}
-			if ( conn != null) {
-				conn.close();
-			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
+			conn = dataSource.getConnection();
+			stmt = conn.prepareStatement(UPDATE_ORDER_STATUS_SQL);
+			stmt.setString(1, newStatus);
+			stmt.setInt(2, orderId);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			LOGGER.error("Something went wrong while updating order status");
+			e.printStackTrace();
+		} finally {
+			closeResourcesWithPreparedStatement(conn, stmt, rs);
 		}
 	}
+	
 
 	@Override
 	public OrderDetails getOrderById(Integer orderId) {
@@ -160,7 +162,7 @@ public class OrderDAOImpl implements OrderDAO {
 			LOGGER.error("Something went wrong while getting order details by id");
 			e.printStackTrace();
 		} finally {
-			 closeResources(conn, stmt, rs);
+			 closeResourcesWithPreparedStatement(conn, stmt, rs);
 		}
 		
 		LOGGER.error("This is what is returned from getOrderById method " + orderDetails);
@@ -199,7 +201,7 @@ public class OrderDAOImpl implements OrderDAO {
 			LOGGER.error("Something went wrong while getting order details by user id");
 			e.printStackTrace();
 		} finally {
-			 closeResources(conn, stmt, rs);
+			 closeResourcesWithPreparedStatement(conn, stmt, rs);
 		}
 		
 		LOGGER.error("This is what is returned from getOrderByUserId method " + orderDetailsList);
@@ -212,6 +214,7 @@ public class OrderDAOImpl implements OrderDAO {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         String sql = GET_ORDERS_AND_USERS_SQL;
+        LOGGER.info("The filter param object  " + params);
         if ( params.isOnlyPagePresent()) {
         	LOGGER.info("Only 'page' param is present. Getting orders and users.");
         	try {
@@ -246,7 +249,7 @@ public class OrderDAOImpl implements OrderDAO {
 			} catch (SQLException e) {
 				LOGGER.error("Something whent wrong while retrieving orders and users");
 			} finally {
-				
+				closeResourcesWithPreparedStatement(conn, stmt, rs);
 			}
         }
 		

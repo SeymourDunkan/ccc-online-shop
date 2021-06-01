@@ -177,6 +177,7 @@
 							</c:if>
 							<td><a href="#">View</a></td>
 							<td><form action="order-list">
+							<input type="hidden" name="order_id" value="${entry.orderDetails.orderId}"/>
 							<select name="new_status">
 							    <option value="Registered" <c:if test="${entry.orderDetails.status=='Registered' }">selected</c:if>>Registered</option>
 							    <option value="Paid" <c:if test="${entry.orderDetails.status=='Paid' }">selected</c:if>>Paid</option>

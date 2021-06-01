@@ -66,6 +66,8 @@ public class RequestParamsRetrievalHelper {
 		} else { 
 			page = 1;
 		}
-		return new OrderListFilterParams(customerEmail, orderId, statusValues, page);
+		
+		String newStatus = request.getParameter("new_status");
+		return new OrderListFilterParams(customerEmail, orderId, statusValues, page, newStatus);
 	}
 }

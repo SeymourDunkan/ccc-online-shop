@@ -30,9 +30,19 @@ public class AdminOrderListService {
 	public void renderOrderList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		OrderDAO orderDAO = new OrderDAOImpl(dataSource);
 		OrderListFilterParams orderListFilterParams = RequestParamsRetrievalHelper.retrieveOrderListFilterParams(request);
+		
+		// request to update order status
+		if ( orderListFilterParams.getNewStatus() != null ) {
+			LOGGER.info("Got request to update order status to " + orderListFilterParams.getNewStatus());
+			Integer orderId = Integer.parseInt(request.getParameter("order_id"));
+			String newStatus = request.getParameter("new_status");
+			orderDAO.updateOrderStatus(orderId, newStatus);
+			orderListFilterParams.setOrderId(null);
+		}
+		
+		
 		// 5 orders per page
 		PaginationHelper paginationHelper = new PaginationHelper(5);
-		
 		String sqlToAppend = paginationHelper.getSQLByPageNumber(orderListFilterParams.getPage());
 		LOGGER.info("SQL to append " + sqlToAppend);
 
