@@ -83,6 +83,5 @@ public class ProductService {
 	    request.setAttribute("categoryId", categoryId);
 		request.getRequestDispatcher("WEB-INF/front/product_list.jsp?category_id="+categoryId+"&page=" + currentPage).forward(request, response);
 	}
-    
-    
+
 }

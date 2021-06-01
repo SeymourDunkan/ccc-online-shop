@@ -140,7 +140,7 @@
 								<div class="invalid-feedback">Please select a valid Category.</div>
 							</div>
 							<div class="col-6">
-								<button class="btn btn-primary" type="submit">Add Product</button>
+								<button class="btn btn-success" type="submit">Add Product</button>
 							</div>
 						</form>
 

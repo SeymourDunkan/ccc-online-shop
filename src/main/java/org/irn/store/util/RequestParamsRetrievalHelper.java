@@ -1,11 +1,11 @@
 package org.irn.store.util;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.irn.store.admin.OrderListFilterParams;
 import org.irn.store.order.OrderDetails;
 import org.irn.store.product.Product;
 import org.irn.store.user.AuthCredentials;
@@ -46,5 +46,26 @@ public class RequestParamsRetrievalHelper {
 		orderDetails.setRecipientPhone(request.getParameter("recipient_phone"));
 		orderDetails.setPaymentMethod(request.getParameter("payment_method"));
 		return orderDetails;
+	}
+	
+	public static OrderListFilterParams retrieveOrderListFilterParams(HttpServletRequest request) {
+		// this might be null
+		String[] statusValues = request.getParameterValues("status");
+		
+		String customerEmail = request.getParameter("customer_email");
+		String stringOrderId = request.getParameter("order_id");
+		Integer orderId = null;
+		if ( stringOrderId != null ) {
+			orderId = Integer.parseInt(stringOrderId);
+		}
+		
+		String stringPage = request.getParameter("page");
+		Integer page = null;
+		if ( stringPage != null ) {
+			page = Integer.parseInt(stringPage);
+		} else { 
+			page = 1;
+		}
+		return new OrderListFilterParams(customerEmail, orderId, statusValues, page);
 	}
 }

@@ -7,8 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,10 +15,11 @@ import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.irn.store.admin.OrderListFilterParams;
+import org.irn.store.admin.OrderUserDTO;
 import org.irn.store.cart.ShoppingCart;
 import org.irn.store.product.Product;
 import org.irn.store.user.User;
-import org.irn.store.user.UserDAOImpl;
 
 public class OrderDAOImpl implements OrderDAO {
 	private static final Logger LOGGER = LogManager.getLogger(OrderDAOImpl.class);
@@ -28,6 +27,8 @@ public class OrderDAOImpl implements OrderDAO {
     private final String INSERT_PRODUCTS_INTO_ORDER_BY_ORDER_ID_SQL = "insert into product_order (order_id, product_id, quantity, subtotal) VALUES (?,?,?,?)";
     private final String GET_ORDER_BY_ORDER_ID_SQL = "select * from order_details where order_id=?";
     private final String GET_ORDERS_BY_USER_ID_SQL = "select * from order_details where user_id=?";
+    private final String GET_ORDERS_AND_USERS_SQL = "select * from order_details inner join users on order_details.user_id=users.user_id order by order_details.order_id desc";
+    private final String GET_TOTAL_RECORDS_NO_FILTER_SQL = "select count(*) from order_details inner join users on order_details.user_id=users.user_id";
     
 	private DataSource dataSource;
 	
@@ -90,9 +91,7 @@ public class OrderDAOImpl implements OrderDAO {
 	}
 	
 	private void addProductsIntoOrder(ShoppingCart cart, Integer orderId) {
-		 Integer affectedRows = null;
-		 
-		 try {
+ 		 try {
 			conn = dataSource.getConnection();
 			stmt = conn.prepareStatement(INSERT_PRODUCTS_INTO_ORDER_BY_ORDER_ID_SQL);
 
@@ -207,5 +206,112 @@ public class OrderDAOImpl implements OrderDAO {
 		return orderDetailsList;
 	}
 	
+	public List<OrderUserDTO> getOrdersAndUsers(String paginationSql, OrderListFilterParams params) {
+		List<OrderUserDTO> ordersAndUsers = new ArrayList<OrderUserDTO>();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String sql = GET_ORDERS_AND_USERS_SQL;
+        if ( params.isOnlyPagePresent()) {
+        	LOGGER.info("Only 'page' param is present. Getting orders and users.");
+        	try {
+				conn = dataSource.getConnection();
+				sql = sql + paginationSql; // TODO
+				LOGGER.info("Sql for users and orders " + sql);
+				stmt = conn.prepareStatement(sql);
+				rs = stmt.executeQuery();
+				while ( rs.next() ) {
+					
+					User user = new User();
+					user.setFirstName(rs.getString("first_name"));
+					user.setLastName(rs.getString("last_name"));
+					user.setId(rs.getInt(2));
+					user.setEmail(rs.getString("email"));
+					user.setRole(rs.getString("role"));
+					user.setBlocked(rs.getString("blocked"));
+					LOGGER.info(user);
+					OrderDetails orderDetails = new OrderDetails();
+					orderDetails.setOrderId(rs.getInt(1));
+					orderDetails.setUserId(rs.getInt(2));
+					orderDetails.setOrderDate(rs.getTimestamp(3));
+					orderDetails.setShippingAddress(rs.getString(4));
+					orderDetails.setRecipientName(rs.getString(5));
+					orderDetails.setRecipientPhone(rs.getString(6));
+					orderDetails.setPaymentMethod(rs.getString(7));
+					orderDetails.setTotal(rs.getBigDecimal(8));
+					orderDetails.setStatus(rs.getString(9));
+					LOGGER.info(orderDetails);
+					ordersAndUsers.add(new OrderUserDTO(orderDetails, user));
+				}
+			} catch (SQLException e) {
+				LOGGER.error("Something whent wrong while retrieving orders and users");
+			} finally {
+				
+			}
+        }
+		
+		// no filter params, only page page=1
+		
+		// only order_id and page=1 (page not present so it defaults to 1)
+		
+		// page and email
+		
+		// page, email and status
+		
+		
+		return ordersAndUsers;
+	}
+
+	public Integer getTotalRecords() {
+		Connection conn = null;
+		PreparedStatement stmt= null;
+		ResultSet rs = null;
+		Integer numberOfRecords = null;
+		try {
+			conn = dataSource.getConnection();
+			stmt = conn.prepareStatement(GET_TOTAL_RECORDS_NO_FILTER_SQL);
+			rs = stmt.executeQuery();
+			rs.next();
+			numberOfRecords = rs.getInt(1);
+		} catch (SQLException e) {
+			LOGGER.error("Some SQL error happened while getting total number of records of orders and users join");
+			e.printStackTrace();
+		} finally {
+			closeResourcesWithStatement(conn, stmt, rs);
+		}
+
+		return numberOfRecords;
+	}
 	
+	private void closeResourcesWithPreparedStatement(Connection conn, PreparedStatement stmt, ResultSet rs) {
+		try {
+			if ( rs != null) {
+				rs.close();
+			}
+			if ( stmt != null) {
+				stmt.close();
+			}
+			if ( conn != null) {
+				conn.close();
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	private void closeResourcesWithStatement(Connection conn, Statement stmt, ResultSet rs) {
+		try {
+			if ( rs != null) {
+				rs.close();
+			}
+			if ( stmt != null) {
+				stmt.close();
+			}
+			if ( conn != null) {
+				conn.close();
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+	}
 }

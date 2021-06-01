@@ -43,8 +43,7 @@
 							</div>	
 						</form>
 			</div>
-		</div>
-		<!-- row -->
+			<!-- row -->
 		<c:if test="${ errorMessages != null }">
 			<div class="row">
 				<div class="col-4 offset-4">
@@ -56,6 +55,8 @@
 				</div>
 			</div>
 		</c:if>
+		</div>
+		
 
 	</div>
 	<!-- container -->

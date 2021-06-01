@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -67,76 +69,171 @@
 			</div>
 		</nav>
 	</div>
-	<div class="container mt-5">
-		<div class="row">
-			<div class="col-12">
-				<table class="table">
-					<thead>
-						<tr>
-							<th scope="col">#</th>
-							<th scope="col">First</th>
-							<th scope="col">Last</th>
-							<th scope="col">Email</th>
-							<th scope="col">Blocked</th>
-							<th scope="col">Action</th>
-						</tr>
-					</thead>
-					<tbody class="table-striped">
-						<tr>
-							<th scope="row">1</th>
-							<td>Mark</td>
-							<td>Otto</td>
-							<td>email@example.com</td>
-							<td class="text-danger">YES</td>
-							<td><a href="#">Unblock</a></td>
-						</tr>
-						<tr>
-							<th scope="row">1</th>
-							<td>Mark</td>
-							<td>Otto</td>
-							<td>email@example.com</td>
-							<td class="text-danger">YES</td>
-							<td><a href="#">Unblock</a></td>
-						</tr>
-						<tr>
-							<th scope="row">1</th>
-							<td>Mark</td>
-							<td>Otto</td>
-							<td>email@example.com</td>
-							<td class="text-success">NO</td>
-							<td><a href="#">Block</a></td>
-						</tr>
-						<tr>
-							<th scope="row">1</th>
-							<td>Mark</td>
-							<td>Otto</td>
-							<td>email@example.com</td>
-							<td class="text-success">NO</td>
-							<td><a href="#">Block</a></td>
-						</tr>
-						
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col">
-				<nav aria-label="Page navigation example">
-					<ul class="pagination">
-						<li class="page-item"><a class="page-link" href="#">Previous</a></li>
-						<li class="page-item"><a class="page-link" href="#">1</a></li>
-						<li class="page-item"><a class="page-link" href="#">2</a></li>
-						<li class="page-item"><a class="page-link" href="#">3</a></li>
-						<li class="page-item"><a class="page-link" href="#">Next</a></li>
-					</ul>
-				</nav>
+	
+	<div class="container">
+	    <div class="row my-3">
+	        <div class="col-9">
+	          
+	                    <h4>Find orders by customer's email</h4>
+						<form method="get" action="order-list"
+							class="row needs-validation" novalidate>
+							
+							<div class="col-4">
+								<label for="customer_email" class="form-label">Email:</label> <input
+									type="email" class="form-control" id="customer_email" name="customer_email"
+									value="email@example.com" required>
+								<div class="invalid-feedback">Please provide a valid
+									Email.</div>
+							</div>
+							<div class="col-8">
+                            <label for="" class="form-label">Status:</label>
+                            <div>
+							<div class="form-check form-check-inline">
+                                 <input class="form-check-input" type="checkbox" 
+                                        value="Registered" id="checkbox1" name="status" checked/>
+                                 <label class="form-check-label" for="checkbox1">Registered</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                 <input class="form-check-input" type="checkbox" 
+                                        value="Paid" id="checkbox2" name="status" checked/>
+                                 <label class="form-check-label" for="checkbox1">Paid</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                 <input class="form-check-input" type="checkbox" 
+                                        value="Cancelled" id="checkbox3" name="status" checked/>
+                                 <label class="form-check-label" for="checkbox1">Cancelled</label>
+                            </div>
+                            </div>
+                            </div>
+							<div class="col-12 mt-3">
+								<button class="btn btn-success" type="submit">Find</button>
+							</div>
 
+						</form>
+							
+	        </div> <!-- div col-9 -->
+	        <div class="col-3">
+	            <h4>Find by order's number</h4>
+						<form method="get" action="order-list"
+							class="row g-3 needs-validation" novalidate>
+							<div class="col-12">
+								<label for="email" class="form-label">Order No.:</label> <input
+									type="text" class="form-control" id="order_id" name="order_id"
+									value="12" required>
+								<div class="invalid-feedback">Please provide a valid
+									Order No.</div>
+							</div>
+
+							<div class="col-12">
+								<button class="btn btn-success" type="submit">Find</button>
+							</div>
+
+						</form>
+	        </div>
+	    </div>
+	    <hr />
+	    <c:set var="currentPage" value="${(empty param.page) ? '1' : param.page}" />
+		<div class="row"> 
+		    <div class="col-12">
+		        <c:if test="${empty ordersAndUsers }">
+		               <h3>No any orders found</h3>
+		        </c:if>
+		        
+		        <c:if test="${not empty ordersAndUsers }">
+                       <h3>Orders</h3>
+		               <table class="table">
+						<tr>
+							<th>No.</th>
+							<th>Customer</th>
+							<th>Email</th>
+							<th>Date</th>
+							<th>Recipient Details</th>
+							<th>Total $</th>
+							<th>Status</th>
+							<th>Action</th>
+							<th>Change status</th>
+						</tr>
+					    <c:forEach var="entry" items="${ordersAndUsers}" varStatus="count">
+						<tr>
+							<td>${entry.orderDetails.orderId }</td>
+							<td><a href="order-list?customer_email=${entry.user.email }">${entry.user.firstName } ${entry.user.lastName }</a></td>
+							<td><a href="order-list?customer_email=${entry.user.email }">${entry.user.email }</a></td>
+							<td><fmt:formatDate value="${entry.orderDetails.orderDate}" type="date" pattern="dd-MMM-yyyy"/></td>
+							<td>
+							    <div>${entry.orderDetails.shippingAddress}</div>
+							    <div>${entry.orderDetails.recipientName}</div>
+							    <div>${entry.orderDetails.recipientPhone}</div>
+							    <div>${entry.orderDetails.paymentMethod}</div>
+							</td>
+							<td>${entry.orderDetails.total} <span>$</span></td>
+							<c:if test="${entry.orderDetails.status== 'Registered' }">
+							<td class="text-warning">${entry.orderDetails.status}</td>
+							</c:if>
+							<c:if test="${entry.orderDetails.status== 'Paid' }">
+							<td class="text-success">${entry.orderDetails.status}</td>
+							</c:if>
+							<c:if test="${entry.orderDetails.status== 'Cancelled' }">
+							<td class="text-danger">${entry.orderDetails.status}</td>
+							</c:if>
+							<td><a href="#">View</a></td>
+							<td><form action="order-list">
+							<select name="new_status">
+							    <option value="Registered" <c:if test="${entry.orderDetails.status=='Registered' }">selected</c:if>>Registered</option>
+							    <option value="Paid" <c:if test="${entry.orderDetails.status=='Paid' }">selected</c:if>>Paid</option>
+							    <option value="Cancelled" <c:if test="${entry.orderDetails.status=='Cancelled' }">selected</c:if>>Cancelled</option>
+							</select>
+							<input type="hidden" name="page" value="${currentPage }"/>
+							<input type="submit" value="Update status" />
+							</form></td>
+						</tr>		
+						</c:forEach>
+
+				</table>
+		               
+		        </c:if>
+		        
+				
 			</div>
+			<div class="col-12">
+                <nav>
+                     <ul class="pagination">
+                          <% 
+                          Integer numberOfPages = (Integer) request.getAttribute("numberOfPages");
+                          for(int i = 1; i <= numberOfPages; i++) { %>
+                               <li class="page-item">
+                                  <a class="page-link link-secondary" href="order-list?page=<%= i %>"><%= i %></a>
+                              </li>
+
+                            <% } %>
+                     </ul>
+               </nav>
+            </div>
+    
 		</div>
 	</div>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
 		crossorigin="anonymous"></script>
+		<script type="text/javascript">
+		(function() {
+			'use strict'
+
+			// Fetch all the forms we want to apply custom Bootstrap validation styles to
+			var forms = document.querySelectorAll('.needs-validation')
+
+			// Loop over them and prevent submission
+			Array.prototype.slice.call(forms).forEach(function(form) {
+				form.addEventListener('submit', function(event) {
+					if (!form.checkValidity()) {
+						event.preventDefault()
+						event.stopPropagation()
+					}
+
+					form.classList.add('was-validated')
+				}, false)
+			})
+		})()
+	</script>
 </body>
 </html>

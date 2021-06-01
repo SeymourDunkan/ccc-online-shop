@@ -191,7 +191,9 @@ public class UserDAOImpl implements UserDAO {
 			}
 			LOGGER.info("Found this user" + user);
 			LOGGER.info("Checking password");
-			if ( !checkPasswordHashMatch(password, user.getPassword())) {user = null;}
+			if ( user != null ) {
+				if ( !checkPasswordHashMatch(password, user.getPassword())) {user = null;}
+			}
 			LOGGER.info("user is " + user);
 		} catch (SQLException e) {
 			LOGGER.error("Could not get User by email");
