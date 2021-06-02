@@ -24,14 +24,11 @@ public class ProductListServlet extends HttpServlet {
 
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// by paramter category_id from GET request
-		// later with pagination
 		ProductService productService = new ProductService(dataSource);
-		productService.renderProducts(request, response);
+		productService.renderProducts(request, response, 8);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 

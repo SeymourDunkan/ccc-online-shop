@@ -18,10 +18,13 @@ public class ProductDAOImpl implements ProductDAO {
 
 private static final Logger LOGGER = LogManager.getLogger(ProductDAOImpl.class);
     private final String INSERT_PRODUCT_SQL = "insert into product (type, brand, model, material, color, image, price, category_id) VALUES (?,?,?,?,?,?,?,?)";
+    private final String UPDATE_PRODUCT_BY_ID_SQL = "update product set type=?, brand=?, model=?, material=?, color=?, image=?, price=?, category_id=? where id=?";
     private final String GET_PRODUCTS_BY_CATEGORY_SQL = "select * from category inner join "
     		+ "product on category.id=product.category_id where category.id=?";
     private final String GET_PRODUCTS_BY_ID_SQL = "select * from product where id=?";
     private final String GET_TOTAL_RECORDS_SQL = "select count(*) as total_records from product where category_id=?";
+    private final String DELETE_PRODUCT_BY_ID_SQL = "delete from product where product.id=?";
+    
 	private DataSource dataSource;
 
 	public ProductDAOImpl(DataSource dataSource) {
@@ -50,13 +53,13 @@ private static final Logger LOGGER = LogManager.getLogger(ProductDAOImpl.class);
 			
 			if (affectedRows > 0) {
 				LOGGER.info("New product was saved to database");
-				// TODO Auto-generated method stub
+
 				savedProduct = product;
 			} else {
 				LOGGER.info("Error. New product was not saved to database");
 			}
 		} catch (SQLException e) {
-			LOGGER.error("Some SQL error happened while adding new user");
+			LOGGER.error("Some SQL error happened while creating new product");
 			e.printStackTrace();
 		} finally {
 			closeResourcesWithPreparedStatement(conn, stmt, rs);
@@ -68,8 +71,39 @@ private static final Logger LOGGER = LogManager.getLogger(ProductDAOImpl.class);
 
 	@Override
 	public Product update(Product product) {
-		// TODO Auto-generated method stub
-		return null;
+		Connection conn = null;
+		PreparedStatement stmt= null;
+		ResultSet rs = null;
+		Product savedProduct = null;
+		try {
+			conn = dataSource.getConnection();
+			stmt = conn.prepareStatement(UPDATE_PRODUCT_BY_ID_SQL);
+			stmt.setString(1, product.getType());
+			stmt.setString(2, product.getBrand());
+			stmt.setString(3, product.getModel());
+			stmt.setString(4, product.getMaterial());
+			stmt.setString(5, product.getColor());
+			stmt.setString(6, product.getImage());
+			stmt.setBigDecimal(7,product.getPrice());
+			stmt.setInt(8, product.getCategoryId());
+			stmt.setInt(9, product.getId());
+			
+			int affectedRows = stmt.executeUpdate();
+			
+			if (affectedRows > 0) {
+				LOGGER.info("Product was updated");
+				savedProduct = getById(product.getId());
+			} else {
+				LOGGER.info("Error. Product was not updated");
+			}
+		} catch (SQLException e) {
+			LOGGER.error("Some SQL error happened while updating product");
+			e.printStackTrace();
+		} finally {
+			closeResourcesWithPreparedStatement(conn, stmt, rs);
+		}
+
+		return savedProduct;
 	}
 	
 	// returns empty List when no results
@@ -164,6 +198,7 @@ private static final Logger LOGGER = LogManager.getLogger(ProductDAOImpl.class);
 				product.setColor(rs.getString(6));
 				product.setImage(rs.getString(7));
 				product.setPrice(rs.getBigDecimal(8));
+				product.setCategoryId(rs.getInt(11));
 			}
 
 		} catch (SQLException e) {
@@ -239,6 +274,31 @@ private static final Logger LOGGER = LogManager.getLogger(ProductDAOImpl.class);
 			closeResourcesWithPreparedStatement(conn, stmt, rs);
 		}
 		return productsInCategory;
+	}
+
+	@Override
+	public void delete(Integer productId) {
+		Connection conn = null;
+		PreparedStatement stmt= null;
+		ResultSet rs = null;
+		try {
+			conn = dataSource.getConnection();
+			stmt = conn.prepareStatement(DELETE_PRODUCT_BY_ID_SQL);
+			stmt.setInt(1, productId);
+			int affectedRows = stmt.executeUpdate();
+			
+			if (affectedRows > 0) {
+				LOGGER.info("Product with id " + productId + "was deleted from database");
+			} else {
+				LOGGER.info("Error. Product was not deleted from database");
+			}
+		} catch (SQLException e) {
+			LOGGER.error("Some SQL error happened while deleting product");
+			e.printStackTrace();
+		} finally {
+			closeResourcesWithPreparedStatement(conn, stmt, rs);
+		}
+
 	}
 
 	

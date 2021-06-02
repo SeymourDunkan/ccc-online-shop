@@ -53,8 +53,16 @@
 						</li>
 						<li class="nav-item"><a class="nav-link" href="order-list">Замовлення</a>
 						</li>
-						<li class="nav-item"><a class="nav-link" href="product-list">Товари</a>
-						</li>
+						<li class="nav-item dropdown">
+                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Товари</a>
+                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                 <li><a class="dropdown-item" href="product-list?category_id=9">Жіноче</a></li>
+                                 <li><a class="dropdown-item" href="product-list?category_id=10">Чоловіче</a></li>
+                                 <li><a class="dropdown-item" href="product-list?category_id=11">Дітяче</a></li>
+                                 <li><a class="dropdown-item" href="product-list?category_id=12">Сумки</a></li>
+                                 <li><a class="dropdown-item" href="product-list?category_id=13">Без категоріі</a></li>
+                             </ul>
+                        </li>
 						<li class="nav-item">
 						    <a class="nav-link" href="add-product">Додати Товар</a>
 						</li>

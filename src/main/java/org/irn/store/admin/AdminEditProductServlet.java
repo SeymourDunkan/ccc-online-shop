@@ -10,27 +10,32 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.irn.store.product.ProductService;
 
-@WebServlet("/admin/product-list")
-public class AdminMangeProductsServlet extends HttpServlet {
+@WebServlet("/admin/edit-product")
+public class AdminEditProductServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
-	@Resource(name = "jdbc/ccc_db")
-    private DataSource dataSource;
+	private static final Logger LOGGER = LogManager.getLogger(AdminEditProductServlet.class);
 
-    public AdminMangeProductsServlet() {
+	@Resource(name = "jdbc/ccc_db")
+	private DataSource dataSource;
+
+    public AdminEditProductServlet() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// render first time or on error
 		ProductService productService = new ProductService(dataSource);
-		productService.renderProductsAdmin(request, response, 8);
-		//request.getRequestDispatcher("/WEB-INF/admin/admin_product_list.jsp").forward(request, response);
+		productService.renderProduct(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
+		// update if ok and redirect to product list category equal to category
+		ProductService productService = new ProductService(dataSource);
+		productService.updateProduct(request, response);
 	}
 
 }

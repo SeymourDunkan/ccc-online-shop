@@ -10,27 +10,30 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.irn.store.product.ProductService;
 
-@WebServlet("/admin/product-list")
-public class AdminMangeProductsServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	
-	@Resource(name = "jdbc/ccc_db")
-    private DataSource dataSource;
 
-    public AdminMangeProductsServlet() {
+@WebServlet("/admin/add-product")
+public class AdminAddProductServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	private static final Logger LOGGER = LogManager.getLogger(AdminAddProductServlet.class);
+
+	@Resource(name = "jdbc/ccc_db")
+	private DataSource dataSource;
+    public AdminAddProductServlet() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ProductService productService = new ProductService(dataSource);
-		productService.renderProductsAdmin(request, response, 8);
-		//request.getRequestDispatcher("/WEB-INF/admin/admin_product_list.jsp").forward(request, response);
+		request.getRequestDispatcher("/WEB-INF/admin/admin_product_form.jsp").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
+		ProductService productService = new ProductService(dataSource);
+		LOGGER.info("trying to forward to index page");
+        productService.addProduct(request, response);
 	}
 
 }

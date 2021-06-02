@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,7 +12,7 @@
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 <meta charset="UTF-8">
-<title>Admin Products</title>
+<title>Admin Add Product</title>
 </head>
 <body>
 	<div class="container mt-5">
@@ -62,7 +62,6 @@
                                  <li><a class="dropdown-item" href="product-list?category_id=13">Без категоріі</a></li>
                              </ul>
                         </li>
-
 						<li class="nav-item">
 						    <a class="nav-link" href="add-product">Додати Товар</a>
 						</li>
@@ -79,79 +78,128 @@
 	</div>
 
 	<div class="container">
-		<div class="row"> 
-		    <c:choose>
-		       <c:when test="${products != null }">
+		<div class="row">
+		<div class="col-8 offset-4" style="height: 100px;"></div>
+			<div class="col-8 offset-2">
+				<h1>Update Product</h1>
+				<c:choose>
+					<c:when test="${ product != null }">
+						<form method="post" action="edit-product"
+							class="row g-3 needs-validation" novalidate>
+							<input type="hidden" name="product_id" value="${ product.id }" />
+							<div class="col-6">
+								<label for="type" class="form-label">Type:</label> <input
+									type="text" class="form-control" id="type" name="type"
+									value="${ product.type }" required>
+								<div class="invalid-feedback">Please provide a valid
+									Type.</div>
+							</div>
+							<div class="col-6">
+								<label for="brand" class="form-label">Brand:</label> <input
+									type="text" class="form-control" id="brand" name="brand"
+									value="${ product.brand }" required>
+								<div class="invalid-feedback">Please provide a valid
+									Brand.</div>
+							</div>
+							<div class="col-6">
+								<label for="model" class="form-label">Model:</label> <input
+									type="text" class="form-control" id="model" name="model"
+									value="${ product.model }" required>
+								<div class="invalid-feedback">Please provide a valid
+									Model.</div>
+							</div>
+							<div class="col-6">
+								<label for="material" class="form-label">Material:</label> <input
+									type="text" class="form-control" id="material" name="material"
+									value="${ product.material }" required>
+								<div class="invalid-feedback">Please provide a valid
+									Material.</div>
+							</div>
+							<div class="col-6">
+								<label for="color" class="form-label">Color:</label> <input
+									type="text" class="form-control" id="color" name="color"
+									value="${ product.color }" required>
+								<div class="invalid-feedback">Please provide a valid
+									Color.</div>
+							</div>
+							<div class="col-6">
+								<label for="image" class="form-label">Image url:</label> <input
+									type="text" class="form-control" id="image" name="image"
+									value="${ product.image }" required>
+								<div class="invalid-feedback">Please provide a valid
+									Image url.</div>
+							</div>
+							<div class="col-6">
+								<label for="price" class="form-label">Price (USD):</label> <input
+									type="number" step="0.01" class="form-control" id="price" name="price"
+									value="${ product.price }" required>
+								<div class="invalid-feedback">Please provide a valid
+									Price.</div>
+							</div>
+							<div class="col-6">
+								<label for="category" class="form-label">Category:</label> <select
+									class="form-select" id="category" name="category" required>
+									<option value="13" <c:if test="${ product.categoryId==13 }">selected</c:if>>Uncategorized</option>
+									<option value="9" <c:if test="${ product.categoryId==9 }">selected</c:if>>Women</option>
+									<option value="10" <c:if test="${ product.categoryId==10 }">selected</c:if>>Men</option>
+									<option value="11" <c:if test="${ product.categoryId==11 }">selected</c:if>>Children</option>
+									<option value="12" <c:if test="${ product.categoryId==12 }">selected</c:if>>Begs</option>
+								</select>
+								<div class="invalid-feedback">Please select a valid Category.</div>
+							</div>
+							<div class="col-6">
+								<button class="btn btn-success" type="submit">Update Product</button>
+							</div>
+						</form>
 
-		         <c:if test="${not products.isEmpty()}">
-		                <div class="col-12"><!-- cart -->
-				<table class="table">
-					<thead>
-						<tr>
-							<th scope="col">Product Id</th>
-							<th scope="col">Image</th>
-							<th scope="col">Item</th>
-							<th scope="col">Price Per Unit</th>
-							<th scope="col" colspan="2">Action</th>
-						</tr>
-					</thead>
-					<tbody class="table-striped">
-					    <c:forEach var="product" items="${products}" varStatus="count">
-						<tr>
-							<td scope="row">${product.id}</td>
-							<td><img style="width: 50px;" src="${product.image }" /></td>
-							<td>${product.type} ${product.brand} ${product.model} ${product.color}</td>
-							<td>${product.price} <span>$</span></td>
-                            <td><a class="btn btn-success" href="edit-product?product_id=${product.id}">Edit</a></td>
-                            <td><a class="btn btn-secondary" href="delete-product?category_id=${product.categoryId}&product_id=${product.id}">Delete</a></td>
-						</tr>		
-						</c:forEach>
-					</tbody>
-				</table>
-			           </div> <!-- cart -->
-
-		          
-		        </c:if>
-		          
-		       </c:when>
-		       <c:otherwise>
-		          <div class="col-12">
-		                    Your Shopping Cart is empty <a href="#" onclick="history.back();" class="link-primary">Back to shopping</a>
-		                </div>
-		       </c:otherwise>
-		    </c:choose>
-			
-		    
+					</c:when>
+					<c:otherwise>
+						<h4>No product found with the id specified</h4>
+					</c:otherwise>
+				</c:choose>
+			</div>
 		</div>
-	</div>
-	<div class="container">
-	    <div class="row">
-	    <c:if test="${products.size()>0 }">
-	        <div class="col-12">
-                <nav aria-label="Page navigation example">
-                     <ul class="pagination">
-                          <% 
-                          Integer numberOfPages = (Integer) request.getAttribute("numberOfPages");
-                          Integer categoryId = (Integer) request.getAttribute("categoryId");
-                          for(int i = 1; i <= numberOfPages; i++) { %>
-                                   <li class="page-item">
-                              <a class="page-link link-secondary" href="product-list?category_id=<%= categoryId %>&page=<%= i %>"><%= i %></a>
-                              </li>
+		<!-- row -->
+		<c:if test="${ errorMessages != null }">
+			<div class="row">
+				<div class="col-4 offset-4">
+					<ul class="text-danger mt-3">
+						<c:forEach var="message" items="${errorMessages}">
+							<li>${message}</li>
+						</c:forEach>
+					</ul>
+				</div>
+			</div>
+		</c:if>
 
-                            <% } %>
-                     </ul>
-               </nav>
-            </div>
-	    </c:if>
-	    <c:if test="${products.size()==0 }">
-	        <h3>Sorry. No products in this category at the moment</h3>
-	    </c:if>
-	        
-	     </div>
 	</div>
+	<!-- container -->
+	
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
-		crossorigin="anonymous"></script>
+		crossorigin="anonymous">
+	</script>
+		<script type="text/javascript">
+		(function() {
+			'use strict'
+
+			// Fetch all the forms we want to apply custom Bootstrap validation styles to
+			var forms = document.querySelectorAll('.needs-validation')
+
+			// Loop over them and prevent submission
+			Array.prototype.slice.call(forms).forEach(function(form) {
+				form.addEventListener('submit', function(event) {
+					if (!form.checkValidity()) {
+						event.preventDefault()
+						event.stopPropagation()
+					}
+
+					form.classList.add('was-validated')
+				}, false)
+			})
+		})()
+	</script>
+	
 </body>
 </html>

@@ -1,32 +1,25 @@
 package org.irn.store.admin;
 
 import java.io.IOException;
-
-import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 
-import org.irn.store.product.ProductService;
-
-@WebServlet("/admin/product-list")
-public class AdminMangeProductsServlet extends HttpServlet {
+@WebServlet("/admin/logout")
+public class AdminLogoutServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
-	@Resource(name = "jdbc/ccc_db")
-    private DataSource dataSource;
 
-    public AdminMangeProductsServlet() {
+    public AdminLogoutServlet() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ProductService productService = new ProductService(dataSource);
-		productService.renderProductsAdmin(request, response, 8);
-		//request.getRequestDispatcher("/WEB-INF/admin/admin_product_list.jsp").forward(request, response);
+		// destroy session
+		// redirect to home page
+		request.getSession().invalidate();
+		response.sendRedirect(request.getContextPath() + "/home");
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

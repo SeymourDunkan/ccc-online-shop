@@ -30,9 +30,12 @@
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                             <li><a class="dropdown-item" href="user-orders">MyOrders</a></li>
                             <li><a class="dropdown-item" href="user-logout">Logout</a></li>
+                            <c:if test="${user.role=='admin'}">
+                            <li><a class="dropdown-item" href="dashboard">Admin Dashboard</a></li>
+                            </c:if>
                         </ul>
                   </div> 
-                  <a class="btn p-1" href="view-cart" role="button"><i class="bi bi-cart"></i>Shopping cart<span class="badge bg-secondary ms-1">9</span></a>
+                  <a class="btn p-1" href="view-cart" role="button"><i class="bi bi-cart"></i>Shopping cart</a>
 				</div>
 			</div>
 		</header>

@@ -32,7 +32,7 @@
                             <li><a class="dropdown-item" href="user-logout">Logout</a></li>
                         </ul>
                   </div> 
-                  <a class="btn p-1" href="view-cart" role="button"><i class="bi bi-cart"></i>Shopping cart<span class="badge bg-secondary ms-1">9</span></a>
+                  <a class="btn p-1" href="view-cart" role="button"><i class="bi bi-cart"></i>Shopping cart</a>
 				</div>
 			</div>
 		</header>

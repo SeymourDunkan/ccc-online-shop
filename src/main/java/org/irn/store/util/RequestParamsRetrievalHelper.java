@@ -27,6 +27,13 @@ public class RequestParamsRetrievalHelper {
      }
 	public static Product retrieveAddProductFormParams(HttpServletRequest request) {
 		Product product = new Product();
+		String stringProductId = request.getParameter("product_id");
+		if ( stringProductId != null ) {
+			product.setId(Integer.parseInt(stringProductId));
+		} else {
+			product.setId(null);
+		}
+		
 		product.setType(request.getParameter("type"));
 		product.setBrand(request.getParameter("brand").trim());
 		product.setModel(request.getParameter("model").trim());
@@ -69,5 +76,20 @@ public class RequestParamsRetrievalHelper {
 		
 		String newStatus = request.getParameter("new_status");
 		return new OrderListFilterParams(customerEmail, orderId, statusValues, page, newStatus);
+	}
+	
+	public static Integer getProductId(HttpServletRequest request) {
+		String stringProductId = request.getParameter("product_id");
+		if ( stringProductId != null ) {
+			return Integer.parseInt(stringProductId);
+		}
+		return null;
+	}
+	public static Integer getCategoryId(HttpServletRequest request) {
+		String stringCategoryId = request.getParameter("category_id");
+		if ( stringCategoryId != null ) {
+			return Integer.parseInt(stringCategoryId);
+		}
+		return null;
 	}
 }
