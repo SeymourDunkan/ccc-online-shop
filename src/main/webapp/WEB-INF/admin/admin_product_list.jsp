@@ -117,7 +117,7 @@
 		       <c:otherwise>
 		          <div class="col-12">
 		                    Your Shopping Cart is empty <a href="#" onclick="history.back();" class="link-primary">Back to shopping</a>
-		                </div>
+		          </div>
 		       </c:otherwise>
 		    </c:choose>
 			

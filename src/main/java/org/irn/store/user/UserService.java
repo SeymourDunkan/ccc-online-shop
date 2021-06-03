@@ -3,7 +3,6 @@ package org.irn.store.user;
 import java.io.IOException;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,17 +10,17 @@ import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import org.irn.store.admin.UserListParams;
+import org.irn.store.util.PaginationHelper;
 import org.irn.store.util.RequestParamsRetrievalHelper;
 import org.irn.store.util.ValidationHelper;
-import org.mindrot.jbcrypt.BCrypt;
 
 public class UserService {
 	private static final Logger LOGGER = LogManager.getLogger(UserService.class);
-	private DataSource dataSource;
 	private UserDAO userDAO;
 	
     public UserService(DataSource dataSource) {
-		this.dataSource = dataSource;
 		userDAO = new UserDAOImpl(dataSource);
 	}
     
@@ -65,11 +64,7 @@ public class UserService {
 
 	public void loginUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ValidationHelper<AuthCredentials> validationHelper = new ValidationHelper<AuthCredentials>();
-
-        // get credentials with form helper
         AuthCredentials authCredentials = RequestParamsRetrievalHelper.retrieveLoginFormParams(request);
-       
-        // validate Login form with validation helper
         List<String> credentialsValidationErrorMessages = validationHelper.validate(authCredentials);
         
         // if there are no validation errors then try to get the user by email and password
@@ -115,5 +110,26 @@ public class UserService {
 		
 	}
 	
-	
+	public void listUsers(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+         
+		 UserListParams userListParams = RequestParamsRetrievalHelper.retrieveUserListParams(request);
+		 if ( userListParams.requestedToggleBlocked() ) {
+			 userDAO.updateBlocked(userListParams.getUserId(), userListParams.getBlocked());
+			 response.sendRedirect("user-list?page=" + userListParams.getPage());
+			 return;
+		 }
+
+		// 2 users per page
+
+		PaginationHelper paginationHelper = new PaginationHelper(2);
+		String sqlToAppend = paginationHelper.getSQLByPageNumber(userListParams.getPage());
+		
+		List<User> userList = userDAO.getUsers(sqlToAppend, userListParams);
+		Integer totalRecords = userDAO.getTotalRecords();
+		LOGGER.info("Total records " + totalRecords);
+		Integer numberOfPages = paginationHelper.getTotalNumberOfPages(totalRecords);
+		request.setAttribute("users", userList);
+	    request.setAttribute("numberOfPages", numberOfPages);
+		request.getRequestDispatcher("/WEB-INF/admin/admin_user_list.jsp?page=" + userListParams.getPage()).forward(request, response);
+	}
 }

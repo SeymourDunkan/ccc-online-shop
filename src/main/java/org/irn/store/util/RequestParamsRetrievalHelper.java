@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import org.irn.store.admin.OrderListFilterParams;
+import org.irn.store.admin.UserListParams;
 import org.irn.store.order.OrderDetails;
 import org.irn.store.product.Product;
 import org.irn.store.user.AuthCredentials;
@@ -91,5 +92,24 @@ public class RequestParamsRetrievalHelper {
 			return Integer.parseInt(stringCategoryId);
 		}
 		return null;
+	}
+	
+	public static UserListParams retrieveUserListParams(HttpServletRequest request) {
+		String blocked = request.getParameter("blocked");
+		String stringUserId = request.getParameter("user_id");
+		Integer userId = null;
+		if ( stringUserId != null ) {
+			userId = Integer.parseInt(stringUserId);
+		}
+		
+		String stringPage = request.getParameter("page");
+		Integer page = null;
+		if ( stringPage != null ) {
+			page = Integer.parseInt(stringPage);
+		} else { 
+			page = 1;
+		}
+
+		return new UserListParams(page, userId, blocked);
 	}
 }

@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -51,8 +53,16 @@
 						</li>
 						<li class="nav-item"><a class="nav-link" href="order-list">Замовлення</a>
 						</li>
-						<li class="nav-item"><a class="nav-link" href="product-list">Товари</a>
-						</li>
+						<li class="nav-item dropdown">
+                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Товари</a>
+                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                 <li><a class="dropdown-item" href="product-list?category_id=9">Жіноче</a></li>
+                                 <li><a class="dropdown-item" href="product-list?category_id=10">Чоловіче</a></li>
+                                 <li><a class="dropdown-item" href="product-list?category_id=11">Дітяче</a></li>
+                                 <li><a class="dropdown-item" href="product-list?category_id=12">Сумки</a></li>
+                                 <li><a class="dropdown-item" href="product-list?category_id=13">Без категоріі</a></li>
+                             </ul>
+                        </li>
 						<li class="nav-item">
 						    <a class="nav-link" href="add-product">Додати Товар</a>
 						</li>
@@ -69,70 +79,76 @@
 	</div>
 	<div class="container mt-5">
 		<div class="row">
-			<div class="col-12">
-				<table class="table">
-					<thead>
-						<tr>
-							<th scope="col">#</th>
-							<th scope="col">First</th>
-							<th scope="col">Last</th>
-							<th scope="col">Email</th>
-							<th scope="col">Blocked</th>
-							<th scope="col">Action</th>
-						</tr>
-					</thead>
-					<tbody class="table-striped">
-						<tr>
-							<th scope="row">1</th>
-							<td>Mark</td>
-							<td>Otto</td>
-							<td>email@example.com</td>
-							<td class="text-danger">YES</td>
-							<td><a href="#">Unblock</a></td>
-						</tr>
-						<tr>
-							<th scope="row">1</th>
-							<td>Mark</td>
-							<td>Otto</td>
-							<td>email@example.com</td>
-							<td class="text-danger">YES</td>
-							<td><a href="#">Unblock</a></td>
-						</tr>
-						<tr>
-							<th scope="row">1</th>
-							<td>Mark</td>
-							<td>Otto</td>
-							<td>email@example.com</td>
-							<td class="text-success">NO</td>
-							<td><a href="#">Block</a></td>
-						</tr>
-						<tr>
-							<th scope="row">1</th>
-							<td>Mark</td>
-							<td>Otto</td>
-							<td>email@example.com</td>
-							<td class="text-success">NO</td>
-							<td><a href="#">Block</a></td>
-						</tr>
-						
-					</tbody>
-				</table>
-			</div>
+			<c:choose>
+		       <c:when test="${users != null }">
+		         <c:if test="${not users.isEmpty()}">
+			          <div class="col-12">
+			               <h3>Customers List</h3>
+				           <table class="table">
+					            <thead>
+						              <tr>
+							             <th scope="col">Id</th>
+							             <th scope="col">First</th>
+							             <th scope="col">Last</th>
+							             <th scope="col">Email</th>
+							             <th scope="col">Blocked</th>
+							             <th scope="col">Action</th>
+						              </tr>
+					           </thead>
+					           <tbody class="table-striped">
+						               	
+	                                  <c:forEach var="user" items="${users}" varStatus="count">
+	                                   <tr>
+							             <th scope="row">${user.id }</th>
+							             <td>${user.firstName }</td>
+							             <td>${user.lastName }</td>
+							             <td>${user.email }</td>
+							             <td <c:if test="${user.blocked=='YES'}">class="text-danger"</c:if>
+							                 <c:if test="${user.blocked=='NO'}">class="text-success"</c:if>
+							             >${user.blocked }</td>
+							             <td>
+							             <c:if test="${user.blocked=='YES'}">
+							                <a class="text-success" href="user-list?page=${param.page }&user_id=${user.id }&blocked=NO">Unblock</a>
+							             </c:if>
+							             <c:if test="${user.blocked=='NO'}">
+							                <a class="text-danger" href="user-list?page=${param.page }&user_id=${user.id }&blocked=YES">Block</a>
+							             </c:if>
+							             </td>
+						              </tr>
+						              </c:forEach>
+					           </tbody>
+				         </table>
+			         </div>
+			    </c:if>
+		          
+		        </c:when>
+		         <c:otherwise>
+		            <div class="col-12">There are no any registered customers yet.</div>
+		         </c:otherwise>
+		    </c:choose>
 		</div>
-		<div class="row">
-			<div class="col">
-				<nav aria-label="Page navigation example">
-					<ul class="pagination">
-						<li class="page-item"><a class="page-link" href="#">Previous</a></li>
-						<li class="page-item"><a class="page-link" href="#">1</a></li>
-						<li class="page-item"><a class="page-link" href="#">2</a></li>
-						<li class="page-item"><a class="page-link" href="#">3</a></li>
-						<li class="page-item"><a class="page-link" href="#">Next</a></li>
-					</ul>
-				</nav>
+	</div>
 
-			</div>
-		</div>
+    <div class="container">
+	    <div class="row">
+	    <c:if test="${users.size()>0 }">
+	        <div class="col-12">
+                <nav aria-label="Page navigation example">
+                     <ul class="pagination">
+                          <% 
+                          Integer numberOfPages = (Integer) request.getAttribute("numberOfPages");
+                          for(int i = 1; i <= numberOfPages; i++) { %>
+                                   <li class="page-item">
+                              <a class="page-link link-secondary" href="user-list?page=<%= i %>"><%= i %></a>
+                              </li>
+
+                            <% } %>
+                     </ul>
+               </nav>
+            </div>
+	    </c:if>
+   
+	     </div>
 	</div>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"

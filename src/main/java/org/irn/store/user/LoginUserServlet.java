@@ -33,7 +33,6 @@ public class LoginUserServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		UserService userService = new UserService(dataSource);
-		LOGGER.info("trying to forward to index page");
 		userService.loginUser(request, response);
 	}
 
